@@ -1,0 +1,83 @@
+<?php
+
+namespace {{ namespace }};
+
+use {{ namespacedModel }};
+use {{ rootNamespace }}Http\Controllers\Controller;
+use {{ namespacedRequests }}
+use Illuminate\Support\Facades\Redirect;
+use Inertia\Inertia;
+use Inertia\Response;
+
+class {{ class }} extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        ${{modelVariable}} = {{ model }}::all();
+        return Inertia::render('{{ model }}/Index', [
+            "title" => "{{ model }}s",
+            "{{modelVariable}}s" => ${{modelVariable}},
+        ]);
+    }
+
+    public function create(Request $request): Response
+    {
+        return Inertia::render('{{ model }}/Form',[
+            "title" => "Add {{ model }}",
+        ]);
+    }
+
+
+    public function store({{ storeRequest }} $request)
+    {
+        $validate = $request->validate([
+            //'name' => 'required',
+        ]);
+
+        ${{modelVariable}} = {{model}}::create($validate);
+        return to_route('{{modelVariable}}.index')->withSuccess("{{model}} created successfuly");
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show({{ model }} ${{ modelVariable }})
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit({{ model }} ${{ modelVariable }}): Response
+    {
+        return Inertia::render('{{model}}/Form',[
+            "title" => "Edit {{model}}",
+            "{{modelVariable}}" => ${{ modelVariable }},
+        ]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update({{ updateRequest }} $request, {{ model }} ${{ modelVariable }})
+    { 
+        $validate = $request->validate([
+            //'name' => 'required',
+        ]);
+        ${{modelVariable}}->update($validate);
+        return to_route('{{modelVariable}}.index')->withSuccess("{{model}} updated successfuly");
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy({{ model }} ${{ modelVariable }})
+    {
+        ${{modelVariable}}->delete();
+        return redirect()->back()->withSuccess("{{model}} deleted successfuly");
+    }
+}

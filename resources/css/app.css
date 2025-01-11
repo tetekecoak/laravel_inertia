@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+table.table{
+    @apply w-full text-sm text-left rtl:text-right   ;
+}
+
+table.table thead{
+    @apply text-xs uppercase  bg-base-50 dark:bg-base-700 ;
+}
+
+table.table thead tr th{
+    @apply px-6 py-3 ;
+}
+
+table.table thead tr th{
+    @apply px-6 py-3;
+}
+
+table.table tbody tr:not(:last-child){
+    @apply bg-white border-b dark:bg-base-800 dark:border-base-700;
+}
+
+table.table tbody tr:last-child{
+    @apply bg-white dark:bg-base-800;
+}
+
+table.table tbody tr td{
+    @apply px-6 py-4;
+}
+table.table tbody tr th{
+    @apply px-6 py-4;
+}
