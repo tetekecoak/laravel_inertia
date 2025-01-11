@@ -61,6 +61,7 @@ const customTheme =   {
           color : {
               secondary : "border border-base-300 bg-white  text-base-700 shadow-sm transition duration-150 ease-in-out hover:bg-base-50 focus:outline-none focus:ring-2 focus:ring-base-500 focus:ring-offset-2 disabled:opacity-25 dark:border-base-500 dark:bg-base-800 dark:text-base-300 dark:hover:bg-base-700 dark:focus:ring-offset-gray-800",
               primary : "border border-transparent bg-primary-700 text-white focus:ring-4 focus:ring-primary-300 enabled:hover:bg-primary-800 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800",
+              discord : "border border-transparent bg-[#5865F2] text-white focus:ring-4 focus:ring-[#5865F2] enabled:hover:bg-[#5865F2] dark:bg-[#5865F2] dark:hover:bg-[#5865F2] dark:focus:ring-[#5865F2]",
           }
       },
       dropdown : {
