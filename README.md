@@ -73,5 +73,13 @@ This guide provides step-by-step instructions to install the project on differen
 
 ---
 
+## Getting Started
+
 You are now ready to use the application on your platform of choice!
+
+### Login to the Website
+- **Email**: `admin@admin.com`
+- **Password**: `admin`
+
+Visit the application in your browser and log in using the above credentials to explore its features.
 
