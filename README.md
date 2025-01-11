@@ -83,3 +83,16 @@ You are now ready to use the application on your platform of choice!
 
 Visit the application in your browser and log in using the above credentials to explore its features.
 
+---
+
+## Additional Information
+
+### Template UI
+The project uses **Flowbite React** for its UI components. Flowbite is a library of accessible and customizable React components built on Tailwind CSS.
+
+To explore Flowbite React, visit the [Flowbite React Documentation](https://flowbite-react.com/).
+
+### Icons
+The project utilizes **React Icons** for a consistent and scalable icon set. React Icons provides a collection of popular icon libraries, making it easy to integrate icons into the application.
+
+For more details, visit the [React Icons Documentation](https://react-icons.github.io/react-icons/).
