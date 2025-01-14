@@ -15,6 +15,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\BlogTagController;
 use App\Http\Controllers\BlogCategoryController;
 use App\Http\Controllers\UploadTestController;
+use App\Http\Controllers\WhatsappController;
 
 Route::middleware('guest')->group(function () {
     Route::get('register', [RegisteredUserController::class, 'create'])
@@ -41,6 +42,12 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
+    Route::get('whatsapp',[WhatsappController::class,'index'])->name('whatsapp.index')->middleware('permission:whatsapp.view');
+    Route::post('whatsapp/{data}/scan-qrcode',[WhatsappController::class,'scanQrCode'])->name('whatsapp.scan-qrcode')->middleware('permission:whatsapp.view');
+    Route::post('whatsapp',[WhatsappController::class,'store'])->name('whatsapp.store')->middleware('permission:whatsapp.create');
+    Route::patch('whatsapp/{data}/update',[WhatsappController::class,'update'])->name('whatsapp.update')->middleware('permission:whatsapp.edit');
+    Route::delete('whatsapp/{data}',[WhatsappController::class,'destroy'])->name('whatsapp.delete')->middleware('permission:whatsapp.delete');
+
     Route::prefix('blog')->group(function (){
         Route::get('tags',[BlogTagController::class,'index'])->name('blog-tags.index')->middleware('permission:blog-tags.view');
         Route::get('tags/create',[BlogTagController::class,'create'])->name('blog-tags.create')->middleware('permission:blog-tags.create');

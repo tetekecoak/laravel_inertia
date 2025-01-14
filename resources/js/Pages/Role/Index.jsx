@@ -18,7 +18,6 @@ export default function Role({title, roles}) {
                 closeModal()
             }
         })
-       
     }
   
     return (

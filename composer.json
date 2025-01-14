@@ -18,11 +18,15 @@
     "require": {
         "php": "^8.2",
         "inertiajs/inertia-laravel": "^2.0",
+        "jenssegers/mongodb": "^5.1",
         "laravel/framework": "^11.31",
         "laravel/octane": "^2.6",
+        "laravel/reverb": "^1.0",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
         "league/flysystem-aws-s3-v3": "^3.0",
+        "mongodb/laravel-mongodb": "^5.1",
+        "php-amqplib/php-amqplib": "^3.7",
         "spatie/laravel-backup": "^9.2",
         "spatie/laravel-permission": "^6.10",
         "tightenco/ziggy": "^2.0"
@@ -73,7 +77,7 @@
         ],
         "dev:octane": [
             "Composer\\Config::disableProcessTimeout",
-            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan octane:start --watch\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=octane,queue,logs,vite"
+            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan octane:start --watch\" \"php artisan queue:work --tries=1\" \"php artisan reverb:start --debug\" \"php artisan rabbitmq:consume\"   \"php artisan pail --timeout=0\" \"npm run dev\" --names=octane,queue,reverb,rabbitmq,logs,vite"
         ]
     },
     "extra": {
