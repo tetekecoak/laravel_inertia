@@ -18,7 +18,7 @@ class WhatsappDeviceController extends Controller
     {
         $whatsAppDevice = WhatsappDevice::all();
         return Inertia::render('WhatsappDevices/Index', [
-            "title" => "Whatsapp",
+            "title" => "Whatsapp Device",
             "whatsAppDevice" => $whatsAppDevice
         ]);
     }

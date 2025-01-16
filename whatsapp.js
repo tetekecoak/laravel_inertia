@@ -31,7 +31,6 @@ async function connectToWhatsApp(filepath = "default") {
         }
 
         if (connection === "connecting") {
-            console.log(`Scan the QR code for ${filepath}:`);
             channel.sendToQueue("whatsapp.deviceStatus", Buffer.from( JSON.stringify({
                 id: filepath,
                 qr: null,

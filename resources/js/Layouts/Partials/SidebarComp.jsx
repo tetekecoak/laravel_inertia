@@ -1,8 +1,9 @@
 import { Sidebar } from "flowbite-react";
 import ApplicationLogo from "@/Components/ApplicationLogo";
-import {  HiChartPie, HiUserGroup,HiKey, HiNewspaper} from "react-icons/hi";
+import {  HiChartPie, HiUserGroup,HiKey, HiNewspaper,} from "react-icons/hi";
 import { Link } from "@inertiajs/react";
 import usePermission from "@/Hooks/PermissionHook";
+import { MdOutlineDevices } from "react-icons/md";
 
 const routes = [
   { title : "Users" , route : "users.index", icon : HiUserGroup, permission:"users.view"},
@@ -10,7 +11,10 @@ const routes = [
   { title : "Blogs" , route : null, icon : HiNewspaper,permissions: 'blog-*', children :[
       { title : "Tags" , route : "blog-tags.index" , permission:"blog-tags.view"},
       { title : "Categories" , route : "blog-categories.index" , permission:"blog-categories.view"},
-  ]}
+  ]},
+  { title : "Whatsapp Device" , route : "whatsapp-devices.index", icon : MdOutlineDevices, permission:"whatsapp-devices.view"},
+
+  
 ]
 
 export default function() {
