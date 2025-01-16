@@ -1,23 +1,31 @@
+import { usePage } from "@inertiajs/react";
 import { Toast } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { HiCheck } from "react-icons/hi";
 
-export default function({ flash = [] }) {
+export default function() {
     const [message,setMessage] = useState(null)
     const [type,setType] = useState(null)
+    const {flash,errors} = usePage().props;
 
     useEffect(()=>{
-       
         if (flash.success != null) {
             setMessage(flash.success)
             setType('success')
+        }else
+        if (errors.error != null) {
+            setMessage(errors.error)
+            setType('error')
+        }else if(errors.warning != null){
+            setMessage(errors.warning)
+            setType('warning')
         }
         setTimeout(() => {
             setMessage(null)
             setType(null)
         }, 2000); 
 
-    },[flash])
+    },[flash,errors.warning,errors.error])
    
     return (
         <div
