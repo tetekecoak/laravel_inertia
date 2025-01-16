@@ -8,13 +8,8 @@ import { MdOutlineDevices } from "react-icons/md";
 const routes = [
   { title : "Users" , route : "users.index", icon : HiUserGroup, permission:"users.view"},
   { title : "Roles" , route : "roles.index", icon : HiKey, permission:"roles.view"},
-  { title : "Blogs" , route : null, icon : HiNewspaper,permissions: 'blog-*', children :[
-      { title : "Tags" , route : "blog-tags.index" , permission:"blog-tags.view"},
-      { title : "Categories" , route : "blog-categories.index" , permission:"blog-categories.view"},
-  ]},
   { title : "Whatsapp Device" , route : "whatsapp-devices.index", icon : MdOutlineDevices, permission:"whatsapp-devices.view"},
 
-  
 ]
 
 export default function() {
