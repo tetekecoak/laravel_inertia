@@ -32,7 +32,7 @@ This guide provides step-by-step instructions to install the project on differen
 4. **Setup Environment**
    - Copy `.env.example` to `.env`:
      ```cmd
-     copy .env.example .env
+     cp .env.example .env
      ```
    - Generate an application key:
      ```cmd
@@ -63,7 +63,7 @@ This guide provides step-by-step instructions to install the project on differen
 7. **(Optional) Serve Application Octane use frankenphp**
    - Install frankenphp:
      ```cmd
-     php artisan octane:install --server frankenphp
+     php artisan octane:install --server frankenphp --force
      ```
    - Run the development server:
      ```cmd

@@ -9,7 +9,7 @@ use App\Models\WhatsappDevice;
 use App\Services\RabbitMQService;
 use Illuminate\Support\Facades\Artisan;
 
-class WhatsappController extends Controller
+class WhatsappDeviceController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,7 +17,7 @@ class WhatsappController extends Controller
     public function index(Request $request) : Response
     {
         $whatsAppDevice = WhatsappDevice::all();
-        return Inertia::render('Whatsapp/Index', [
+        return Inertia::render('WhatsappDevices/Index', [
             "title" => "Whatsapp",
             "whatsAppDevice" => $whatsAppDevice
         ]);
@@ -42,7 +42,7 @@ class WhatsappController extends Controller
         ]);
         $validate['status'] = 0;
         WhatsappDevice::create($validate);
-        return redirect()->back()->withSuccess("Whatsapp device created successfuly");
+        return redirect()->back()->withSuccess("Whatsapp device device created successfuly");
 
     }
 

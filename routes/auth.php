@@ -15,7 +15,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\BlogTagController;
 use App\Http\Controllers\BlogCategoryController;
 use App\Http\Controllers\UploadTestController;
-use App\Http\Controllers\WhatsappController;
+use App\Http\Controllers\WhatsappDeviceController;
 
 Route::middleware('guest')->group(function () {
     Route::get('register', [RegisteredUserController::class, 'create'])
@@ -42,11 +42,11 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
-    Route::get('whatsapp',[WhatsappController::class,'index'])->name('whatsapp.index')->middleware('permission:whatsapp.view');
-    Route::post('whatsapp/{data}/scan-qrcode',[WhatsappController::class,'scanQrCode'])->name('whatsapp.scan-qrcode')->middleware('permission:whatsapp.view');
-    Route::post('whatsapp',[WhatsappController::class,'store'])->name('whatsapp.store')->middleware('permission:whatsapp.create');
-    Route::patch('whatsapp/{data}/update',[WhatsappController::class,'update'])->name('whatsapp.update')->middleware('permission:whatsapp.edit');
-    Route::delete('whatsapp/{data}',[WhatsappController::class,'destroy'])->name('whatsapp.delete')->middleware('permission:whatsapp.delete');
+    Route::get('whatsapp-devices',[WhatsappDeviceController::class,'index'])->name('whatsapp-devices.index')->middleware('permission:whatsapp-devices.view');
+    Route::post('whatsapp-devices/{data}/scan-qrcode',[WhatsappDeviceController::class,'scanQrCode'])->name('whatsapp-devices.scan-qrcode')->middleware('permission:whatsapp-devices.view');
+    Route::post('whatsapp-devices',[WhatsappDeviceController::class,'store'])->name('whatsapp-devices.store')->middleware('permission:whatsapp-devices.create');
+    Route::patch('whatsapp-devices/{data}/update',[WhatsappDeviceController::class,'update'])->name('whatsapp-devices.update')->middleware('permission:whatsapp-devices.edit');
+    Route::delete('whatsapp-devices/{data}',[WhatsappDeviceController::class,'destroy'])->name('whatsapp-devices.delete')->middleware('permission:whatsapp-devices.delete');
 
     Route::prefix('blog')->group(function (){
         Route::get('tags',[BlogTagController::class,'index'])->name('blog-tags.index')->middleware('permission:blog-tags.view');

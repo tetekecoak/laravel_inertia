@@ -19,10 +19,6 @@ export default function Index({title,whatsAppDevice}) {
                 phone_number: "" ,
     });
 
-
- 
-
-
     const [qrcode ,setQrcode] = useState({
         id : null,
         qr: null,
@@ -39,14 +35,14 @@ export default function Index({title,whatsAppDevice}) {
     const handleSave = (e) =>{
         e.preventDefault()
         if (!selectedId) {
-            post(route("whatsapp.store"),{
+            post(route("whatsapp-devices.store"),{
                 onSuccess : () => {
                     closeModal()
                     setData({})
                 }
             })
         }else{
-            patch(route("whatsapp.update",selectedId),{
+            patch(route("whatsapp-devices.update",selectedId),{
                 onSuccess : () => {
                     closeModal()
                     setData({})
@@ -78,7 +74,7 @@ export default function Index({title,whatsAppDevice}) {
 
     const handleDelete = () => {
         console.log(selectedId)
-        router.delete(route('whatsapp.delete',selectedIdDelete),{
+        router.delete(route('whatsapp-devices.delete',selectedIdDelete),{
             onFinish : () => {
                 closeModalDelete()
             }
@@ -89,9 +85,9 @@ export default function Index({title,whatsAppDevice}) {
         setQrcode({
             id : item.phone_number,
             qr : null,
-            status : "NEW"
+            status : 0
         });  
-        router.post(route('whatsapp.scan-qrcode',item.id),{},{
+        router.post(route('whatsapp-devices.scan-qrcode',item.id),{},{
             onSuccess : () => openModalQr()
         })
        
@@ -109,6 +105,8 @@ export default function Index({title,whatsAppDevice}) {
             case 1:
                     return ["Connected","success"]
             default:
+                return ["Disconnect","failure"]
+                 
                 break;
         }
     }
@@ -116,7 +114,9 @@ export default function Index({title,whatsAppDevice}) {
     useEffect(() => {
         echo.channel('Whatsapp')
             .listen('WhatsappQrcodeEvent', (event) => {
-                if (event.data.status == "NEW") {
+                console.log(event.data.status)
+                if (event.data.id === qrcode.id) {
+                    if (event.data.status == 0) {
                         QRCode.toDataURL(event.data.qr, { width: 300 }, (err, url) => {
                             if (err) {
                                 console.error("Failed to generate QR code:", err);
@@ -125,13 +125,13 @@ export default function Index({title,whatsAppDevice}) {
                             setQrcode({
                                 id: event.data.id,
                                 qr: url,
-                                status: "NEW",
+                                status: 0,
                             });
                         });
-                }else if (event.data.status == "CONNECTING") {
-                    setQrcode({...qrcode,status : "CONNECTING"});  
-                }else if(event.data.status == "CONNECTED"){
-                            setQrcode({...qrcode,status : "CONNECTED"});  
+                }else if (event.data.status == 2) {
+                    setQrcode({...qrcode,status : 2});  
+                }else if(event.data.status == 1){
+                            setQrcode({...qrcode,status : 1});  
                             router.reload({
                                 only: ['whatsAppDevice'],
                                 onFinish :() => {
@@ -139,18 +139,27 @@ export default function Index({title,whatsAppDevice}) {
                                     setQrcode({});  
                                 }
                             });
-                }else if(event.data.status === 'DISCONNECT'){
+                }else{
                     router.reload({
                         only: ['whatsAppDevice'],
+                        onFinish :() => {
+                            closeModalQr()
+                            setQrcode({});  
+                        }
                     });
                 }
+                }
+                else
+                router.reload({
+                    only: ['whatsAppDevice'],
+                });
             });
 
         // Clean up the listener when the component unmounts
         return () => {
             echo.leaveChannel('Whatsapp');
         };
-    }, []); // Empty dependency array ensures this runs only once
+    }, [handleQrcode]); // Empty dependency array ensures this runs only once
     return (
         <AuthenticatedLayout
             header={title}
@@ -158,7 +167,7 @@ export default function Index({title,whatsAppDevice}) {
             <Head title={title} />
             <div className='flex flex-wrap justify-between mb-4'>
                     <div>
-                        {usePermission('whatsapp.create') && <Button color='primary' onClick={handleForm}> <HiPlus className="mr-2 h-5 w-5"/> <span>Add Device</span> </Button> }
+                        {usePermission('whatsapp-devices.create') && <Button color='primary' onClick={handleForm}> <HiPlus className="mr-2 h-5 w-5"/> <span>Add Device</span> </Button> }
                     </div>
                 </div>
             <div className="relative overflow-x-auto">
@@ -210,7 +219,7 @@ export default function Index({title,whatsAppDevice}) {
             <div className="flex w-full items-center flex-col space-y-2 justify-center">
                 {/* QR Code or Spinner for Generating QR Code */}
                 <div>
-                    {qrcode.status === "NEW" && (
+                    {qrcode.status === 0 && (
                         qrcode.qr ? <img src={qrcode.qr} alt="Generating QR Code" /> : <div>
                         <Spinner className="mr-2" />
                         <span>Generating QR Code</span>
@@ -221,13 +230,13 @@ export default function Index({title,whatsAppDevice}) {
 
                 {/* Connection Status */}
                 <div>
-                    {qrcode.status === "CONNECTING" && (
+                    {qrcode.status === 2 && (
                         <div>
                             <Spinner className="mr-2" />
                             <span>Connecting</span>
                         </div>
                     )}
-                    {qrcode.status === "CONNECTED" && (
+                    {qrcode.status === 1 && (
                         <div className="flex text-green-500">
                             <FaCheck className="mr-2 w-5 h-5" />
                             <span>Connected</span>

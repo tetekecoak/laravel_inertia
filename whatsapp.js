@@ -18,8 +18,6 @@ async function connectToWhatsApp(filepath = "default") {
         auth: state,
     });
 
-    sockets[filepath] = sock;
-
     sock.ev.on("connection.update", (update) => {
         const { connection, lastDisconnect, qr  } = update;
 
@@ -28,62 +26,80 @@ async function connectToWhatsApp(filepath = "default") {
             channel.sendToQueue("whatsapp.deviceStatus", Buffer.from( JSON.stringify({
                 id: filepath,
                 qr: qr,
-                status: "NEW",
+                status: 0,
+            })), { persistent: true });
+        }
+
+        if (connection === "connecting") {
+            console.log(`Scan the QR code for ${filepath}:`);
+            channel.sendToQueue("whatsapp.deviceStatus", Buffer.from( JSON.stringify({
+                id: filepath,
+                qr: null,
+                status: 2,
             })), { persistent: true });
         }
 
         if (connection === "close") {
             const reason = new Boom(lastDisconnect?.error)?.output?.statusCode;
             console.log("Reasonnnn", reason)
-            if (reason == DisconnectReason.loggedOut) {
-                sock.end()
-                delete sockets[filepath]
-                fs.rm(`${folderPath}/${filepath}`, { recursive: true }, (err) => {
-                    if (err) {
-                        console.error(`Error deleting folder for ${filepath}:`, err.message);
-                    } else {
-                        console.log(`Remove connection id ${filepath}.`);
-                    }
-                });
-                channel.sendToQueue("whatsapp.deviceStatus", Buffer.from( JSON.stringify({
-                    id: filepath,
-                    qr: null,
-                    status: "DISCONNECT",
-                })), { persistent: true });
-            }else if(reason == DisconnectReason.restartRequired){
-                channel.sendToQueue("whatsapp.deviceStatus", Buffer.from( JSON.stringify({
-                    id: filepath,
-                    qr: null,
-                    status: "CONNECTING",
-                })), { persistent: true });
+            if(reason == DisconnectReason.restartRequired){
+                if (sockets[sock.authState.creds.me.id.split(":")[0]]) {
+                    channel.sendToQueue("whatsapp.deviceStatus", Buffer.from( JSON.stringify({
+                        id: filepath,
+                        qr: null,
+                        status: 3,
+                    })), { persistent: true });
+                    sock.end()
+                }else if (filepath !== sock.authState.creds.me.id.split(":")[0]) {
+                    channel.sendToQueue("whatsapp.deviceStatus", Buffer.from( JSON.stringify({
+                        id: filepath,
+                        qr: null,
+                        status: 411,
+                    })), { persistent: true });
+                    sock.end()
+                }
+                else
                 console.log(`Restaring connection id ${filepath}.`);
+                channel.sendToQueue("whatsapp.deviceStatus", Buffer.from( JSON.stringify({
+                    id: filepath,
+                    qr: null,
+                    status: reason,
+                })), { persistent: true });
                 connectToWhatsApp(filepath)
-            }else if(reason == DisconnectReason.badSession){
-                 sock.end()
-                 delete sockets[filepath]
-                 fs.rm(`${folderPath}/${filepath}`, { recursive: true }, (err) => {
+            }else if(reason == DisconnectReason.connectionClosed){
+                if (sockets[filepath]) {
+                    sock.logout()
+                }else{
+                    sock.logout()
+                }
+                channel.sendToQueue("whatsapp.deviceStatus", Buffer.from( JSON.stringify({
+                    id: filepath,
+                    qr: null,
+                    status: reason,
+                })), { persistent: true });
+            }
+            else{
+                sock.end()
+                delete sockets[filepath]
+                fs.rm(`${folderPath}/${filepath}`, { recursive: true }, (err) => {
                     if (err) {
                         console.error(`Error deleting folder for ${filepath}:`, err.message);
                     } else {
                         console.log(`Remove connection id ${filepath}.`);
                     }
                 });
-            }else if(reason == DisconnectReason.timedOut){
-                sock.end()
-                delete sockets[filepath]
-                fs.rm(`${folderPath}/${filepath}`, { recursive: true }, (err) => {
-                   if (err) {
-                       console.error(`Error deleting folder for ${filepath}:`, err.message);
-                   } else {
-                       console.log(`Remove connection id ${filepath}.`);
-                   }
-               });
-           }
+                channel.sendToQueue("whatsapp.deviceStatus", Buffer.from( JSON.stringify({
+                    id: filepath,
+                    qr: null,
+                    status: reason,
+                })), { persistent: true });
+            }
         } else if (connection === "open") {
+            sockets[filepath] = sock;
             channel.sendToQueue("whatsapp.deviceStatus", Buffer.from( JSON.stringify({
                 id: filepath,
                 qr: null,
-                status: "CONNECTED",
+                status: 1,
             })), { persistent: true });
             console.log(`Connection opened for id ${filepath}!`);
         }

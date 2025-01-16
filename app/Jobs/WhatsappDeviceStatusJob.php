@@ -26,12 +26,7 @@ class WhatsappDeviceStatusJob implements ShouldQueue
     {
         $device = WhatsappDevice::where('phone_number',$this->data['id'])->first();
         if ($device) {
-            if ($this->data['status'] == "CONNECTED") {
-                $device->update(['status' => 1]);
-            }
-            else{
-                $device->update(['status' => 0]);
-            }
+            $device->update(['status' => $this->data['status']]);
             event(new \App\Events\WhatsappQrcodeEvent($this->data));
         }
     }
