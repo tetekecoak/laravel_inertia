@@ -41,26 +41,8 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
-    Route::prefix('blog')->group(function (){
-        Route::get('tags',[BlogTagController::class,'index'])->name('blog-tags.index')->middleware('permission:blog-tags.view');
-        Route::get('tags/create',[BlogTagController::class,'create'])->name('blog-tags.create')->middleware('permission:blog-tags.create');
-        Route::post('tags',[BlogTagController::class,'store'])->name('blog-tags.store')->middleware('permission:blog-tags.create');
-        Route::get('tags/{tag}/edit',[BlogTagController::class,'edit'])->name('blog-tags.edit')->middleware('permission:blog-tags.edit');
-        Route::patch('tags/{tag}/update',[BlogTagController::class,'update'])->name('blog-tags.update')->middleware('permission:blog-tags.edit');
-        Route::delete('tags/{tag}',[BlogTagController::class,'destroy'])->name('blog-tags.delete')->middleware('permission:blog-tags.delete');
-
-        Route::get('categories',[BlogCategoryController::class,'index'])->name('blog-categories.index')->middleware('permission:blog-categories.view');
-        Route::get('categories/create',[BlogCategoryController::class,'create'])->name('blog-categories.create')->middleware('permission:blog-categories.create');
-        Route::post('categories',[BlogCategoryController::class,'store'])->name('blog-categories.store')->middleware('permission:blog-categories.create');
-        Route::get('categories/{blogCategory}/edit',[BlogCategoryController::class,'edit'])->name('blog-categories.edit')->middleware('permission:blog-categories.edit');
-        Route::patch('categories/{blogCategory}/update',[BlogCategoryController::class,'update'])->name('blog-categories.update')->middleware('permission:blog-categories.edit');
-        Route::delete('categories/{blogCategory}',[BlogCategoryController::class,'destroy'])->name('blog-categories.delete')->middleware('permission:blog-categories.delete');
-    });
-
     Route::get('test-upload',[UploadTestController::class,'index'])->name('upload-test.index');
     Route::post('test-upload',[UploadTestController::class,'store'])->name('upload-test.store');
-
-
     Route::get('roles',[RoleController::class,'index'])->name('roles.index')->middleware('permission:roles.view');
     Route::get('roles/create',[RoleController::class,'create'])->name('roles.create')->middleware('permission:roles.create');
     Route::post('roles',[RoleController::class,'store'])->name('roles.store')->middleware('permission:roles.create');
