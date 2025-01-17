@@ -39,7 +39,7 @@ class HandleInertiaRequests extends Middleware
             'urlPrevious' => url()->previous(),
             'query' => $request->query(),
             'flash' => [
-                "success" => $request->session()->has('success') ? $request->session()->get('success') : null
+                "success" => $request->session()->get('success') ,
             ]
         ];
     }
