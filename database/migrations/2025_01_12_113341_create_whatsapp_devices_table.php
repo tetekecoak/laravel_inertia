@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('whatsapp_devices', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null'); // BIGINT NULL
             $table->string('name');
             $table->string('phone_number');
             $table->integer('status');

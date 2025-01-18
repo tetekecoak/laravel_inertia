@@ -20,8 +20,8 @@ export default {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
             colors: {
-                'base' : colors.stone,
-                'primary' : colors.amber
+                'base' : colors.neutral,
+                'primary' : colors.blue
             }
         },
     },

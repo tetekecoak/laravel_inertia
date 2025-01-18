@@ -30,55 +30,38 @@ async function connectToWhatsApp(filepath = "default") {
             })), { persistent: true });
         }
 
-        if (connection === "connecting") {
-            channel.sendToQueue("whatsapp.deviceStatus", Buffer.from( JSON.stringify({
-                id: filepath,
-                qr: null,
-                status: 2,
-            })), { persistent: true });
-        }
+        // if (connection === "connecting") {
+        //     channel.sendToQueue("whatsapp.deviceStatus", Buffer.from( JSON.stringify({
+        //         id: filepath,
+        //         qr: null,
+        //         status: 2,
+        //     })), { persistent: true });
+        // }
 
         if (connection === "close") {
             const reason = new Boom(lastDisconnect?.error)?.output?.statusCode;
             console.log("Reasonnnn", reason)
             if(reason == DisconnectReason.restartRequired){
-                if (sockets[sock.authState.creds.me.id.split(":")[0]]) {
-                    channel.sendToQueue("whatsapp.deviceStatus", Buffer.from( JSON.stringify({
-                        id: filepath,
-                        qr: null,
-                        status: 3,
-                    })), { persistent: true });
+                if (filepath !== sock.authState.creds.me.id.split(":")[0]) {
                     sock.end()
-                }else if (filepath !== sock.authState.creds.me.id.split(":")[0]) {
                     channel.sendToQueue("whatsapp.deviceStatus", Buffer.from( JSON.stringify({
                         id: filepath,
                         qr: null,
                         status: 411,
                     })), { persistent: true });
+                }
+                else {
                     sock.end()
+                    console.log(`Restaring connection id ${filepath}.`);
+                    channel.sendToQueue("whatsapp.deviceStatus", Buffer.from( JSON.stringify({
+                        id: filepath,
+                        qr: null,
+                        status: 2,
+                    })), { persistent: true });
+                    connectToWhatsApp(filepath)
                 }
-                else
-                console.log(`Restaring connection id ${filepath}.`);
-                channel.sendToQueue("whatsapp.deviceStatus", Buffer.from( JSON.stringify({
-                    id: filepath,
-                    qr: null,
-                    status: reason,
-                })), { persistent: true });
-                connectToWhatsApp(filepath)
-            }else if(reason == DisconnectReason.connectionClosed){
-                if (sockets[filepath]) {
-                    sock.logout()
-                }else{
-                    sock.logout()
-                }
-                channel.sendToQueue("whatsapp.deviceStatus", Buffer.from( JSON.stringify({
-                    id: filepath,
-                    qr: null,
-                    status: reason,
-                })), { persistent: true });
-            }
-            else{
-                sock.end()
+               
+            }else{
                 delete sockets[filepath]
                 fs.rm(`${folderPath}/${filepath}`, { recursive: true }, (err) => {
                     if (err) {
@@ -107,6 +90,7 @@ async function connectToWhatsApp(filepath = "default") {
     sock.ev.on("creds.update", saveCreds);
 
     sock.ev.on("messages.upsert", ({ messages }) => {
+        messages[0]['whatsappId'] = filepath;
         channel.sendToQueue("whatsapp.chat", Buffer.from( JSON.stringify(messages)), { persistent: true });
         console.log(`Received messages for ${filepath}:`, messages);
     });
@@ -182,7 +166,9 @@ function getExistingWhatsappID() {
                         } 
                     }
                     if (queue === "whatsapp.removeConnection") {
-                        sockets[responseData.id].ev.emit("connection.update", { connection: "close" });
+                        if (responseData.id && sockets[responseData.id]) {
+                            sockets[responseData.id].logout()
+                        }
                     }
                     console.log(`Received from ${queue}: ${msg.content.toString()}`);
                     channel.ack(msg); // Acknowledge pesan

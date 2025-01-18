@@ -1,6 +1,6 @@
 import { Sidebar } from "flowbite-react";
 import ApplicationLogo from "@/Components/ApplicationLogo";
-import {  HiChartPie, HiUserGroup,HiKey, HiNewspaper,} from "react-icons/hi";
+import {  HiChartPie, HiUserGroup,HiKey,} from "react-icons/hi";
 import { Link } from "@inertiajs/react";
 import usePermission from "@/Hooks/PermissionHook";
 import { MdOutlineDevices } from "react-icons/md";

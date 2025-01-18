@@ -12,10 +12,9 @@ use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
-use App\Http\Controllers\BlogTagController;
-use App\Http\Controllers\BlogCategoryController;
 use App\Http\Controllers\UploadTestController;
 use App\Http\Controllers\WhatsappDeviceController;
+use App\Http\Controllers\WhatsappMessageController;
 
 Route::middleware('guest')->group(function () {
     Route::get('register', [RegisteredUserController::class, 'create'])
@@ -43,6 +42,7 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware('auth')->group(function () {
 
+    Route::get('whatsapp-chats',[WhatsappMessageController::class,'index'])->name('whatsapp-chats.index')->middleware('permission:whatsapp-chats.view');
     Route::get('whatsapp-devices',[WhatsappDeviceController::class,'index'])->name('whatsapp-devices.index')->middleware('permission:whatsapp-devices.view');
     Route::post('whatsapp-devices/{data}/scan-qrcode',[WhatsappDeviceController::class,'scanQrCode'])->name('whatsapp-devices.scan-qrcode')->middleware('permission:whatsapp-devices.view');
     Route::post('whatsapp-devices',[WhatsappDeviceController::class,'store'])->name('whatsapp-devices.store')->middleware('permission:whatsapp-devices.create');

@@ -16,7 +16,7 @@ class WhatsappDeviceController extends Controller
      */
     public function index(Request $request) : Response
     {
-        $whatsAppDevice = WhatsappDevice::all();
+        $whatsAppDevice = WhatsappDevice::get();
         return Inertia::render('WhatsappDevices/Index', [
             "title" => "Whatsapp Device",
             "whatsAppDevice" => $whatsAppDevice
@@ -48,7 +48,9 @@ class WhatsappDeviceController extends Controller
 
     public function scanQrCode(WhatsappDevice $data)
     {
-
+        if ($data->status == 1) {
+            return redirect()->back()->withErrors(['error' => "Whatsapp already connected."]);
+        }
         $rabbitmq = new RabbitMQService;
         $rabbitmq->sendMessage('whatsapp.createConnection',[ "id" => $data->phone_number]);
         return redirect()->back();
@@ -88,11 +90,11 @@ class WhatsappDeviceController extends Controller
      */
     public function destroy(WhatsappDevice $data)
     {
-        $data->delete();
-        if($data->status){
+        if($data->status == 1){
             $rabbitmq = new RabbitMQService;
             $rabbitmq->sendMessage('whatsapp.removeConnection',[ "id" => $data->phone_number]);
         }
+        $data->delete();
         return redirect()->back()->withSuccess("Whatsapp device deleted successfuly");
 
     }

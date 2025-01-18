@@ -59,13 +59,7 @@ class RabbitMQConsume extends Command
                 \App\Jobs\WhatsappDeviceStatusJob::dispatch($data);
             }
             elseif ($queueName == "whatsapp.chat") {
-                foreach ($data as $value) {
-                    if ($value['message']['protocolMessage'] ?? false) {
-                        WhatsappProtocolMessage::create($value);
-                    }else
-                    WhatsappChat::create($value);
-
-                }
+                \App\Jobs\WhatsappChatConsume::dispatch($data);
             }
             echo "Received from queue: {$queueName}\n";
         };

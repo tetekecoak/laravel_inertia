@@ -10,12 +10,11 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class WhatsappQrcodeEvent implements ShouldBroadcast
+class WhatsappChatEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $data,$auth;
-
     /**
      * Create a new event instance.
      */

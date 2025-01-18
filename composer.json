@@ -26,6 +26,7 @@
         "laravel/tinker": "^2.9",
         "league/flysystem-aws-s3-v3": "^3.0",
         "mongodb/laravel-mongodb": "^5.1",
+        "mongodb/mongodb": "^1.20",
         "php-amqplib/php-amqplib": "^3.7",
         "spatie/laravel-backup": "^9.2",
         "spatie/laravel-permission": "^6.10",
@@ -73,11 +74,11 @@
         ],
         "dev": [
             "Composer\\Config::disableProcessTimeout",
-            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serv\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite"
+            "bun concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serv\" \"php artisan reverb:start\" \"php artisan rabbitmq:consume\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"bun run dev\" --names=server,reverb,queue,logs,vite"
         ],
         "dev:octane": [
             "Composer\\Config::disableProcessTimeout",
-            "bun concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan octane:start --watch\" \"php artisan reverb:start\" \"php artisan rabbitmq:consume\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"bun run dev\" --names=octane,queue,logs,vite"
+            "bun concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan octane:start --watch\" \"php artisan reverb:start\" \"php artisan rabbitmq:consume\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"bun run dev\" --names=octane,reverb,queue,logs,vite"
         ]
     },
     "extra": {

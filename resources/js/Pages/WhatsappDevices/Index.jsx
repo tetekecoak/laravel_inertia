@@ -112,9 +112,9 @@ export default function Index({title,whatsAppDevice}) {
     }
 
     useEffect(() => {
-        echo.channel('Whatsapp')
+        const channel = echo.private('Whatsapp.1')
             .listen('WhatsappQrcodeEvent', (event) => {
-                console.log(event.data.status)
+                console.log(qrcode.id)
                 if (event.data.id === qrcode.id) {
                     if (event.data.status == 0) {
                         QRCode.toDataURL(event.data.qr, { width: 300 }, (err, url) => {
@@ -128,26 +128,23 @@ export default function Index({title,whatsAppDevice}) {
                                 status: 0,
                             });
                         });
-                }else if (event.data.status == 2) {
-                    setQrcode({...qrcode,status : 2});  
-                }else if(event.data.status == 1){
-                            setQrcode({...qrcode,status : 1});  
+                    }else{
+                        if (event.data.status == 2) {
+                            setQrcode({...qrcode,status : event.data.status});  
+                        }
+                        else{
+                            setQrcode({...qrcode,status : event.data.status});  
                             router.reload({
                                 only: ['whatsAppDevice'],
-                                onFinish :() => {
+                                onFinish: () => {
                                     closeModalQr()
-                                    setQrcode({});  
+                                    setQrcode({})
                                 }
                             });
-                }else{
-                    router.reload({
-                        only: ['whatsAppDevice'],
-                        onFinish :() => {
-                            closeModalQr()
-                            setQrcode({});  
+
                         }
-                    });
-                }
+                        
+                    }  
                 }
                 else
                 router.reload({
@@ -157,7 +154,9 @@ export default function Index({title,whatsAppDevice}) {
 
         // Clean up the listener when the component unmounts
         return () => {
-            echo.leaveChannel('Whatsapp');
+             // Leave the channel properly
+            channel.stopListening('WhatsappQrcodeEvent');
+            echo.leaveChannel('Whatsapp.1');
         };
     }, [handleQrcode]); // Empty dependency array ensures this runs only once
     return (
