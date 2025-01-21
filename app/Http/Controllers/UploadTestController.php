@@ -31,7 +31,6 @@ class UploadTestController extends Controller
         $validate= $request->validate([
             'file' => 'required|file'
         ]);
-        
         $request->file('file')->storePublicly('public/avatars', 's3');
         return redirect()->back()->withSuccess("oke");
     }
