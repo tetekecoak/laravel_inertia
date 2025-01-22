@@ -22,3 +22,5 @@ Route::post('/gardens', [GardenController::class,'store']);
 Route::put('/gardens/{data}', [GardenController::class,'update']);
 Route::delete('/gardens/{data}', [GardenController::class,'destroy']);
 Route::post('/gardens/{data}/upload-image', [GardenController::class,'uploadImage']);
+Route::post('/gardens/{data}/devices', [GardenController::class,'addDevices']);
+Route::delete('/gardens/{data}/devices', [GardenController::class,'destroyDevice']);

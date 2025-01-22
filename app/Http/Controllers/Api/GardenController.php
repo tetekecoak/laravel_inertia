@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Garden;
+use App\Models\IotDevice;
 use App\Http\Resources\GardenResource;
 use Storage;
 
@@ -15,13 +16,14 @@ class GardenController extends Controller
 {
     public function index(){
         $data = Garden::all()->map(function($q){
-            $q->image_url = Storage::disk('public')->url('gardens/'.$q->image);
+            $q->image_url =$q->image ? Storage::disk('public')->url('gardens/'.$q->image) : null;
             return $q;
         });
         return $this->responseOK("OK",$data);
     }
 
     public function show(Garden $data){
+        $data->load('iotDevices');
         $data->image_url = Storage::disk('public')->url('gardens/'.$data->image);
 
         return $this->responseOK("OK",$data);
@@ -83,6 +85,39 @@ class GardenController extends Controller
             $storeFile = $this->storeStorage('gardens',$request->file('file'),$data->image);
             $data->update(['image'=> $storeFile]);
             return $this->responseOK("Garden deleted successfully");
+        } catch (\Throwable $th) {
+            return $this->responseInternalServerError($th->getMessage());
+        }
+    }
+
+    public function addDevices(Garden $data, Request $request){
+        $validator = Validator::make($request->all(), [
+            'ids' => 'required|array',
+            'ids.*' => 'integer|exists:iot_devices,id',
+
+        ]);
+        if ($validator->fails()) {
+            return $this->responseErrorValidation($validator->errors());
+        }
+        try {
+            $data->iotDevices()->syncWithoutDetaching($validator->valid()['ids']);
+            return $this->responseOK("Garden iot add successfully");
+        } catch (\Throwable $th) {
+            return $this->responseInternalServerError($th->getMessage());
+        }
+    }
+
+    public function destroyDevice(Garden $data, Request $request){
+        $validator = Validator::make($request->all(), [
+            'ids' => 'required|array',
+            'ids.*' => 'integer|exists:iot_devices,id',
+        ]);
+        if ($validator->fails()) {
+            return $this->responseErrorValidation($validator->errors());
+        }
+        try {
+            $data->iotDevices()->detach($validator->valid()['ids']);
+            return $this->responseOK("Garden iot deleted successfully");
         } catch (\Throwable $th) {
             return $this->responseInternalServerError($th->getMessage());
         }

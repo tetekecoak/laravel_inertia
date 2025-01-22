@@ -13,11 +13,9 @@ class Garden extends Model
     protected $fillable = ['name','location','image'];
 
 
-    protected function firstName(): Attribute
+    public function iotDevices()
     {
-        return Attribute::make(
-            get: fn (string $value) => ucfirst($value),
-        );
+        return $this->belongsToMany(IotDevice::class, 'garden_iot_devices', 'garden_id', 'iot_device_id');
     }
 
    

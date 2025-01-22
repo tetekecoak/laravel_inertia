@@ -33,8 +33,8 @@ return new class extends Migration
         });
 
         Schema::create('garden_iot_devices', function (Blueprint $table) {
-            $table->foreignId('garden_id')->constrained('blog_posts')->onDelete('restrict')->onUpdate('cascade'); // BIGINT NOT NULL
-            $table->foreignId('iot_device_id')->constrained('blog_tags')->onDelete('restrict')->onUpdate('cascade'); // BIGINT NOT NULL
+            $table->foreignId('garden_id')->constrained('gardens')->onDelete('restrict')->onUpdate('cascade'); // BIGINT NOT NULL
+            $table->foreignId('iot_device_id')->constrained('iot_devices')->onDelete('restrict')->onUpdate('cascade'); // BIGINT NOT NULL
 
             $table->primary(['garden_id', 'iot_device_id']); // Composite primary key
             $table->index('iot_device_id', 'idx_pc_category'); // Index for categoryId
